@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<body class="rui-block-scroll">
+    <div id="app">
+        <div class="main-app app-component">
+            <div>
+                <div class="session-manager-component">
+                    <div class="rui-modal session-expiration-modal login-modal rui-modal--small">
+                        <div class="rui-modal__dialog">
+                            <div class="rui-modal__content">
+                                <div class="rui-modal-body">
+                                    <div>
+                                        <h3 class="login-header">
+                                            Login
+                                        </h3>
+                                        {% for error, text in form.errors.items %}
+                                            <div style="color:red">{{text}}</div>
+                                        {% endfor %}
+                                        <div class="login-form login-component">
+                                            <form class="rui-form" method="post">
+                                                {% csrf_token %}
+                                                <div class="rui-grid-row container">
+                                                    <div class="rui-text-input rui-text-input--error">
+                                                        <div class="rui-input-label-wrapper">
+                                                            <label class="rui-input-label" for={{form.username.id_for_label}}>
+                                                                <span>Email Address</span>
+                                                            </label>
+                                                        </div>
+                                                        <span class="rui-text-input__wrapper">
+                                                            <span class="rui-text-input__icon">
+                                                                <i class="fa fa-male"></i>
+                                                            </span>
+                                                            {{form.username}}
+                                                            </span>
+                                                        <div class="rui-text-input__error-text"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="rui-grid-row container">
+                                                    <div class="rui-text-input rui-text-input--error">
+                                                        <div class="rui-input-label-wrapper">
+                                                            <label class="rui-input-label" for={{form.password.id_for_label}}>
+                                                                <span>Password</span>
+                                                            </label>
+                                                        </div>
+                                                        <span class="rui-text-input__wrapper">
+                                                            <span class="rui-text-input__icon">
+                                                                <i class="fa fa-shield"></i>
+                                                            </span>
+                                                            {{form.password}}
+                                                        </span>
+                                                        <div class="rui-text-input__error-text"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="rui-action-bar rui-action-bar--align-right">
+                                                    <span style='padding-right:50px;'>
+                                                        <a href='{% url 'password_reset' %}'>CHANGE PASSWORD</a>
+                                                    </span>
+                                                    <button class="rui-button rui-button--primary" type="submit">
+                                                        <span class="rui-button__text">Login</span>
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rui-modal__backdrop"></div>
+                    </div>
+                </div>
+                <div class="core-modal global-errors"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

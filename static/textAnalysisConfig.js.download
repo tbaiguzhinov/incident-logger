@@ -1,0 +1,60 @@
+window.textAnalysisConfig = {
+    PERSON: {
+        forms: {
+            involvement: 'ac0e7f09-7eb5-4b39-bfea-bec2c6b7dd7a',
+            target: 'd9084259-075a-458f-8af5-fe3b30bcd447',
+        },
+        relationships: {
+            involvement: 'Incident-InvolvedPerson',
+            target: 'InvolvedPerson-Person',
+        },
+        objectTypes: {
+            involvement: 'InvolvedPerson',
+            target: 'Person',
+        },
+    },
+    ORG: {
+        forms: {
+            involvement: 'f48ff7ee-a8db-4945-a025-41498337fae4',
+            target: '966a7c8b-5350-447f-8f8d-c74823241db9',
+        },
+        relationships: {
+            involvement: 'Incident-InvolvedOrganization',
+            target: 'InvolvedOrganization-Organization',
+        },
+        objectTypes: {
+            involvement: 'InvolvedOrganization',
+            target: 'Organization',
+        },
+    },
+    GPE: {
+        forms: {
+            target: 'f2e16b1f-cf35-489a-965e-7bfbc003118b',
+            involvement: '7728452f-9a48-4fd6-8b98-0402828758a7',
+            involvementOnly: 'b6c0d28b-3909-462b-b161-8033da56b038',
+        },
+        relationships: {
+            involvement: 'Incident-InvolvedLocation',
+            target: 'InvolvedLocation-Location',
+        },
+        objectTypes: {
+            involvement: 'InvolvedLocation',
+            target: 'Location',
+        },
+    },
+    FAC: {
+        forms: {
+            target: 'f2e16b1f-cf35-489a-965e-7bfbc003118b',
+            involvement: '7728452f-9a48-4fd6-8b98-0402828758a7',
+            involvementOnly: 'b6c0d28b-3909-462b-b161-8033da56b038',
+        },
+        relationships: {
+            involvement: 'Incident-InvolvedLocation',
+            target: 'InvolvedLocation-Location',
+        },
+        objectTypes: {
+            involvement: 'InvolvedLocation',
+            target: 'Location',
+        },
+    },
+};

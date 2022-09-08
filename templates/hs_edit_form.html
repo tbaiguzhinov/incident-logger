@@ -1,0 +1,580 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  
+    <div class="rui-sticky-header--wrapper" style="height: 25px;">
+      <header class="rui-sticky-header site-header main-menu-component">
+        <div class="main-menu-component__wrapper">
+          <nav class="app-top-bar" style="">
+            <img src="{% static '6a45b8b4-958f-4e2c-87fb-4308aea49476.png' %}" alt="" style="display: none;">
+
+          </nav>
+        </div>
+      </header>
+    </div>
+    <body>
+    <div class="page-full-screen create-object-page">
+      <form class="rui-form create-object-component" action="/hs_form/{{incident.id}}" method="post">
+        {% csrf_token %}
+        <div class="rui-card edit-object-main single-column create-single-card">
+          <div class="rui-card-content">
+            <div class="rui-grid-row container">
+              <div class="create-object-header edit-object-header">
+                <div class="form-title-evaluation">
+                  <div class="edit-object-form-title">
+                    <h2 class="form-title-text">Create a New H&amp;S Incident</h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rui-grid-row edit-object-body container">
+              <div class="rui-grid-column gr-12">
+                <div class="object-form-component">
+                  <div class="rui-grid-row configurable-form-root container">
+                    <div class="rui-grid-column form-section-component section-depth-0 gr-12 no-gutter">
+                      {% if form.errors %}
+                      <div class="rendered-section" style="color:red">
+                        <p>Please fix errors before submitting</p>
+                      </div>
+                      {% endif %}
+                      <div class="rendered-section">
+                        <div class="rui-grid-row form-section-container container">
+                          <div class="rui-grid-column form-section-component section-depth-4 gr-12 no-gutter">
+                            <div class="rui-card">
+                              <div class="rui-card-content">
+                                <div class="rendered-section">
+                                  <div class="rui-grid-row form-section-container container">
+                                    <div class="rui-grid-column form-section-component section-depth-4 gr-3 no-gutter">
+                                      <div class="rendered-section">
+                                        <div class="components">
+                                          <div class="form-component">
+                                            <div class="virgin field-evaluation-component">
+                                              <div class="rui-combobox">
+                                                <div class="rui-combobox__wrapper">
+                                                  <div class="rui-input-label-wrapper">
+                                                    <label class="rui-input-label" for="{{form.business_activity.id_for_label}}">
+                                                      {{ form.business_activity.errors }}
+                                                      <span>Business Activity</span>
+                                                    </label>
+                                                    <span>
+                                                    </span>
+                                                  </div>
+                                                  <div>
+                                                    {{ form.business_activity }}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="rui-grid-column form-section-component section-depth-4 gr-3 no-gutter">
+                                      <div class="rendered-section">
+                                        <div class="components">
+                                          <div class="form-component">
+                                            <div class="required-field virgin field-evaluation-component">
+                                              <div class="radio-list">
+                                                <div class="rui-input-label-wrapper">
+                                                  <div style="color:red; font-size: 12px;">{{form.incident_classification.errors}}</div>
+                                                  <label class="rui-input-label">
+                                                    <span>Incident Classification</span>
+                                                  </label>
+                                                </div>
+                                                <div onchange="checkClass(event)">
+                                                  {{ form.incident_classification }}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="rui-grid-row form-section-container container">
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="rui-grid-column form-section-component section-depth-4 gr-2 no-gutter">
+                                      <div class="rendered-section">
+                                        <div class="components">
+                                          <div class="form-component">
+                                            <div class="required-field virgin field-evaluation-component">
+                                              <div class="radio-list">
+                                                <div class="rui-input-label-wrapper">
+                                                  <div style="color:red; font-size: 12px;">{{form.work_related.errors}}</div>
+                                                  <label class="rui-input-label">
+                                                    <span>Work related</span>
+                                                  </label>
+                                                </div>
+                                                <div>
+                                                  {{ form.work_related }}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="rui-grid-row form-section-container container">
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="rui-grid-column form-section-component section-depth-2 gr-3 no-gutter">
+                                      <div class="rendered-section">
+                                        <div class="components">
+                                          <div class="form-component">
+                                            <div class="required-field virgin field-evaluation-component">
+                                              <div class="radio-list">
+                                                <div class="rui-input-label-wrapper">
+                                                  <div style="color:red; font-size: 12px;">{{form.auth_notified.errors}}</div>
+                                                  <label class="rui-input-label">
+                                                    <span>Ext. Auth. notification?</span>
+                                                  </label>
+                                                </div>
+                                                <div>
+                                                  {{ form.auth_notified }}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="rui-grid-row form-section-container container">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="rui-grid-column form-section-component section-depth-1 gr-12 no-gutter">
+                            <div class="rui-card">
+                              <div class="rui-card-content">
+                                <div class="rendered-section">
+                                  <div class="rui-grid-row form-section-container container">
+                                    <div class="rui-grid-column form-section-component section-depth-2 gr-12 no-gutter">
+                                      <div class="rendered-section">
+                                        <div class="components">
+                                          <div class="markdown-renderer">
+                                            <p>Describe what is known at the time of reporting. Ensure
+                                              the nature of injury and body part affected (abrasion,
+                                              cut, fracture, etc.) mentioned.<br>⚠️ Important note: name
+                                              of the victim should remain confidential</p>
+                                          </div>
+                                          <div class="form-component">
+                                            <div class="virgin field-evaluation-component">
+                                              <div class="rui-text-input">
+                                                <div class="rui-input-label-wrapper">
+                                                  <div style="color:red; font-size: 12px;">{{form.description.errors}}</div>
+                                                  <label class="rui-input-label" for="{{form.description.id_for_label}}">
+                                                    <span>Incident Description</span>
+                                                  </label>
+                                                </div>
+                                                <span class="rui-text-input__wrapper">
+                                                  {{form.description}}
+                                                </span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="rui-grid-row form-section-container container">
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="rui-grid-column form-section-component section-depth-2 gr-12 no-gutter">
+                                      <div class="rendered-section">
+                                        <div class="components">
+                                          <div class="markdown-renderer">
+                                            <hr>
+                                          </div>
+                                        </div>
+                                        <div class="rui-grid-row form-section-container container">
+                                          <div
+                                            class="rui-grid-column form-section-component section-depth-3 gr-12 no-gutter">
+                                            <div class="rendered-section">
+                                              <div class="rui-grid-row form-section-container container">
+                                                <div
+                                                  class="rui-grid-column form-section-component section-depth-3 gr-4 no-gutter">
+                                                  <div class="rendered-section">
+                                                    <div class="components">
+                                                      <div class="form-component">
+                                                        <div class="required-field valid field-evaluation-component">
+                                                          <div>
+                                                            <div>
+                                                              <div class="rui-input-label-wrapper">
+                                                                <div style="color:red; font-size: 12px;">{{form.location.errors}}</div>
+                                                                <label class="rui-input-label">
+                                                                  <span>Incident Location</span>
+                                                                </label>
+                                                                <div id="locate" onchange="checkAlert(event)">
+                                                                  {{ form.location }}
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <div class="rui-grid-row form-section-container container">
+                                                      <div
+                                                        class="rui-grid-column form-section-component section-depth-5 gr-12 no-gutter">
+                                                        <div class="rendered-section">
+                                                          <div class="components">
+                                                            <div class="markdown-renderer">
+                                                              <hr>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <div
+                                                  class="rui-grid-column form-section-component section-depth-4 gr-6 no-gutter">
+                                                  <div class="rendered-section">
+                                                    <div class="components">
+                                                        <div class="markdown-renderer" id="location" style="display: none;">
+                                                          <p>Please indicate the <strong>latitude</strong> and
+                                                            <strong>longitude</strong> of the location.
+                                                          </p>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+
+                                                    <div class="rendered-section">
+                                                      <div class="components">
+                                                          <div class="markdown-renderer" id="location2" style="display:none;">
+                                                            <div>
+                                                              <div class="rui-input-label-wrapper">
+                                                                <div style="color:red; font-size: 12px;">{{form.latitude.errors}}</div>
+                                                                <label class="rui-input-label">
+                                                                  <span>Latitude (between 25 and 40)</span>
+                                                                </label>
+                                                              </div>
+                                                              <div class="rui-combobox__wrapper">
+                                                                <div>{{form.latitude}}</div>
+                                                                <div class="rui-input-label-wrapper">
+                                                                  <div style="color:red; font-size: 12px;">{{form.longitude.errors}}</div>
+                                                                  <label class="rui-input-label">
+                                                                    <span>Longitude (between 44 and 64)</span>
+                                                                  </label>
+                                                                </div>
+                                                                <div class="rui-combobox__wrapper">
+                                                                  <div>{{form.longitude}}</div>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                          <div class="rui-grid-row form-section-container container">
+                                                          </div>
+                                                        </div>
+                                                        <div class="rendered-section">
+                                                          <div class="components">
+                                                            <div class="form-component" id="location3" style="display: none;">
+                                                              <div>
+                                                                <div class="rui-input-label-wrapper">
+                                                                  <div style="color:red; font-size: 12px;">{{form.jti_site.errors}}</div>
+                                                                  <label class="rui-input-label">
+                                                                    <span>JTI Site</span>
+                                                                  </label>
+                                                                </div>
+                                                                <div
+                                                                  class="rui-combobox geolocation-geosearch rui-combobox--disable-fuzzy-search">
+                                                                  <div class="rui-combobox__wrapper">
+                                                                    {{form.jti_site}}
+                                                                  </div>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                          <div class="rui-grid-row form-section-container container">
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div
+                                            class="rui-grid-column form-section-component section-depth-2 gr-9 gr-centered no-gutter">
+                                            <div class="rendered-section">
+                                              <div class="components">
+                                                <div class="markdown-renderer">
+                                                  <hr>
+                                                </div>
+                                              </div>
+                                              <div class="rui-grid-row form-section-container container">
+                                                <div style="color:red; font-size: 12px;">{{form.date_occurred.errors}}</div>
+                                                <div style="color:red; font-size: 12px;">{{form.date_reported.errors}}</div>
+                                                <div
+                                                  class="rui-grid-column form-section-component section-depth-3 gr-5 no-gutter">
+                                                  <div class="rendered-section">
+                                                    <div class="components">
+                                                      <div class="form-component">
+                                                        <div class="virgin field-evaluation-component">
+                                                          <div class="rui-date-picker">
+                                                            <div class="rui-date-picker__input-wrapper">
+                                                              <div class="rui-text-input rui-date-picker__text-input">
+                                                                <div class="rui-input-label-wrapper">
+                                                                  
+                                                                  <label class="rui-input-label" for="{{form.date_occurred.id_for_label}}">
+                                                                    <span>Date Occurred</span>
+                                                                  </label>
+                                                                  <div>
+                                                                  </div>
+                                                                </div>
+                                                                <span class="rui-text-input__wrapper">
+                                                                  {{form.date_occurred}}
+                                                                </span>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <div class="rui-grid-row form-section-container container">
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <div
+                                                  class="rui-grid-column form-section-component section-depth-3 gr-5 no-gutter">
+                                                  <div class="rendered-section">
+                                                    <div class="components">
+                                                      <div class="form-component">
+                                                        <div class="virgin field-evaluation-component">
+                                                          <div class="rui-date-picker">
+                                                            <div class="rui-date-picker__input-wrapper">
+                                                              <div class="rui-text-input rui-date-picker__text-input">
+                                                                <div class="rui-input-label-wrapper">
+                                                                  <label class="rui-input-label"
+                                                                    for="{{ form.date_reported.id_for_label }}">
+                                                                    <span>Date Reported to Local
+                                                                      H&amp;S</span>
+                                                                  </label>
+                                                                </div>
+                                                                <span class="rui-text-input__wrapper">
+                                                                  {{form.date_reported}}
+                                                                </span>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <div class="rui-grid-row form-section-container container">
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {{injury_formset.management_form}}
+                          {% for injury_form in injury_formset %}
+                          <div class="rui-grid-column form-section-component section-depth-3 gr-12 no-gutter"
+                            id="injury" style="display:none;">
+                            <div class="rui-card">
+                              <div class="rui-card-content">
+                                <div class="rendered-section">
+                                  <div class="rui-grid-row form-section-container container">
+                                    <div class="rui-grid-column form-section-component section-depth-2 gr-12 no-gutter">
+                                      <div class="rendered-section">
+                                        <div class="components">
+                                          <h3 class="form-title-text">Injury</h3>
+                                          <div class="form-component">
+                                            <div class="virgin field-evaluation-component">
+                                              <div class="rui-input-label-wrapper" class="rui-grid-column form-section-component section-depth-4 gr-3 no-gutter">
+                                                <label class="rui-input-label"
+                                                  for="{{ injury_form.relation_to_business.id_for_label }}">
+                                                  <span>Relation to business</span>
+                                                </label>
+                                              </div>
+                                              <div>{{injury_form.relation_to_business}}</div>
+                                              <div class="rui-input-label-wrapper" class="rui-grid-column form-section-component section-depth-4 gr-3 no-gutter">
+                                                <label class="rui-input-label"
+                                                  for="{{ injury_form.severity.id_for_label }}">
+                                                  <span>Severity</span>
+                                                </label>
+                                              </div>
+                                              <div>{{injury_form.severity}}</div>
+                                              <div class="rui-input-label-wrapper">
+                                                <label class="rui-input-label"
+                                                  for="{{ injury_form.immediate_cause.id_for_label }}">
+                                                  <span>Immediate cause</span>
+                                                </label>
+                                              </div>
+                                              <div>{{injury_form.immediate_cause}}</div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="rui-grid-row form-section-container container">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {% endfor %}
+                          {{illness_formset.management_form}}
+                          {% for illness_form in illness_formset %}
+                          <div class="rui-grid-column form-section-component section-depth-1 gr-12 no-gutter"
+                            id="illness" style="display:none;">
+                            <div class="rui-card">
+                              <div class="rui-card-content">
+                                <div class="rendered-section">
+                                  <div class="rui-grid-row form-section-container container">
+                                    <div class="rui-grid-column form-section-component section-depth-2 gr-12 no-gutter">
+                                      <div class="rendered-section">
+                                        <div class="components">
+                                          <h3 class="form-title-text">Illness</h3>
+                                          <div class="form-component">
+                                            <div class="virgin field-evaluation-component">
+                                              <div class="rui-input-label-wrapper" class="rui-grid-column form-section-component section-depth-4 gr-3 no-gutter">
+                                                <label class="rui-input-label"
+                                                  for="{{ illness_form.relation_to_business.id_for_label }}">
+                                                  <span>Relation to business</span>
+                                                </label>
+                                              </div>
+                                              <div>{{illness_form.relation_to_business}}</div>
+                                              <div class="rui-input-label-wrapper" class="rui-grid-column form-section-component section-depth-4 gr-3 no-gutter">
+                                                <label class="rui-input-label"
+                                                  for="{{ illness_form.severity.id_for_label }}">
+                                                  <span>Severity</span>
+                                                </label>
+                                              </div>
+                                              <div>{{illness_form.severity}}</div>
+                                              <div class="rui-input-label-wrapper">
+                                                <label class="rui-input-label"
+                                                  for="{{ illness_form.consequence.id_for_label }}">
+                                                  <span>Consequence</span>
+                                                </label>
+                                              </div>
+                                              <div>{{illness_form.consequence}}</div>
+                                              <div class="rui-input-label-wrapper">
+                                                <label class="rui-input-label"
+                                                  for="{{ illness_form.cause.id_for_label }}">
+                                                  <span>Immediate cause</span>
+                                                </label>
+                                              </div>
+                                              <div>{{illness_form.cause}}</div>
+                                              <div class="rui-input-label-wrapper">
+                                                <label class="rui-input-label"
+                                                  for="{{ illness_form.age.id_for_label }}">
+                                                  <span>Age</span>
+                                                </label>
+                                              </div>
+                                              <div>{{illness_form.age}}</div>
+                                              <div class="rui-input-label-wrapper">
+                                                <label class="rui-input-label"
+                                                  for="{{ illness_form.gender.id_for_label }}">
+                                                  <span>Gender</span>
+                                                </label>
+                                              </div>
+                                              <div>{{illness_form.gender}}</div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="rui-grid-row form-section-container container">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {% endfor %}
+                        </div>
+                      </div>
+                      <div class="rui-action-bar rui-action-bar--align-center">
+                        <span>
+                          <div class="rui-confirmation-button cancel-object-btn">
+                            <span>
+                              <div>
+                                <input type="submit" value="Submit"
+                                  class="rui-button rui-button--primary rui-button--block"
+                                  style="background-color: rgb(88, 146, 65);">
+                              </div>
+                            </span>
+                          </div>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+      </form>
+    </div>
+
+  </body>
+  <script>
+    function checkAlert(evt) {
+      var x = document.getElementById("location");
+      var y = document.getElementById("location2");
+      var z = document.getElementById("location3");
+      if (evt.target.value === "Onsite") {
+        x.style.display = "none";
+        y.style.display = "none";
+        z.style.display = "block";
+      } else {
+        x.style.display = "block";
+        y.style.display = "block";
+        z.style.display = "none";
+      }
+    }
+  </script>
+  <script>
+    function checkClass(evt) {
+      var injury = document.getElementById("injury");
+      var illness = document.getElementById("illness");
+      if (evt.target.value === "Health") {
+        injury.style.display = "none";
+        illness.style.display = "block";
+      } else {
+        injury.style.display = "block";
+        illness.style.display = "none";
+      }
+    }
+  </script>
+  <script>
+
+function disableButton(){
+    var class_ = document.getElementById("id_incident_classification_0");
+    var location_ = document.getElementById("id_location_0");
+    var injury = document.getElementById("injury");
+    var illness = document.getElementById("illness");
+    var x = document.getElementById("location");
+    var y = document.getElementById("location2");
+    var z = document.getElementById("location3");
+    if (class_.value === "Health") {
+      injury.style.display = "none";
+      illness.style.display = "block";
+    } else {
+      injury.style.display = "block";
+      illness.style.display = "none";
+    }
+    if (location_.value === "Onsite") {
+        x.style.display = "none";
+        y.style.display = "none";
+        z.style.display = "block";
+      } else {
+        x.style.display = "block";
+        y.style.display = "block";
+        z.style.display = "none";
+      }
+  }
+window.onload = function(){
+ console.log(disableButton()); 
+}
+  </script>
+{% endblock %}
