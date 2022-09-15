@@ -244,6 +244,13 @@ def create_incident(incident):
             '16': 207795,
             '17': 207796,
         }
+        vehicle_options = {
+            'Car': 207808,
+            'Motorcycle': 207809,
+            'Van': 207810,
+            'Rickshaw': 207811,
+            'Other': 207812,
+        }
         for injury in incident.injuries.all():
             data = {
             'objectTypeId': 14693, # Injury
@@ -260,6 +267,10 @@ def create_incident(incident):
                 }, # Linking back to Incident
             'triggerId': 60459, # Add Injury / Illness details
             }
+            if injury.immediate_cause == '1' and injury.vehicle:
+                data['evaluations'].append(
+                    {'fieldId': 69616, 'value': vehicle_options[injury.vehicle]}, # Vehicle Type
+                )
             token = authentication()
             response = requests.post(
                 'https://eu.core.resolver.com/creation/creation',
@@ -274,7 +285,7 @@ def create_incident(incident):
         headers={'Authorization': f'bearer {token}'},
     )
     response.raise_for_status()
-    return unique_id
+    return unique_id, incident_id
 
 def update_incident(incident):
     pass

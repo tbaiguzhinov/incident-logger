@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from django.core.validators import MaxValueValidator, MinValueValidator
 
 from django.contrib.auth.models import User
 
@@ -53,6 +52,21 @@ class Injury(models.Model):
         choices=CAUSE_CHOICES,
         max_length=100,
     )
+    VEHICLE_CHOICES = [
+        ('Car', 'Car'),
+        ('Motorcycle', 'Motorcycle'),
+        ('Van', 'Van'),
+        ('Rickshaw', 'Rickshaw'),
+        ('Other', 'Other'),
+    ]
+    vehicle = models.CharField(
+        'Vehicle Type',
+        choices=VEHICLE_CHOICES,
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    
     incident = models.ForeignKey(
         'HS_incident',
         verbose_name='Incident',
@@ -266,8 +280,13 @@ class HS_incident(models.Model):
         max_length=50,
         blank=True,
     )
-    simp_id = models.IntegerField(
-        'SIMP id',
+    unique_id = models.IntegerField(
+        'SIMP unique id',
+        null=True,
+        blank=True,
+    )
+    object_id = models.IntegerField(
+        'SIMP object id',
         null=True,
         blank=True,
     )
@@ -285,7 +304,7 @@ class HS_incident(models.Model):
 
     def __str__(self):
         if self.date_created:
-            return f'H&S INC #{self.date_created.year}-{self.simp_id}'
+            return f'H&S INC #{self.date_created.year}-{self.unique_id}'
         else:
             return f'H&S INC #{self.id}'
 

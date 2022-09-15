@@ -2,6 +2,7 @@ from sre_constants import CATEGORY_UNI_SPACE
 from django import forms
 import datetime
 from hs_incidents.models import HS_incident
+from django.forms import BaseInlineFormSet
 from django.forms.widgets import SelectDateWidget, RadioSelect, Textarea, PasswordInput, TextInput
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -20,15 +21,16 @@ class RFPAuthForm(AuthenticationForm):
         widget=PasswordInput(
             attrs={
                 'class': 'rui-text-input__input rui-text-input__single-line',
-                'placeholder':'Password'
+                'placeholder': 'Password'
             }
         )
     )
 
+
 class HSIncidentForm(forms.ModelForm):
 
     class Meta:
-        model=HS_incident
+        model = HS_incident
         fields = '__all__'
         widgets = {
             'incident_classification': RadioSelect(attrs={'class': 'rui-radio__control'}),
@@ -42,21 +44,26 @@ class HSIncidentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['business_activity'].widget.attrs.update({'class': 'rui-combobox__control'})
-        self.fields['jti_site'].widget.attrs.update({'class': 'rui-combobox__control'})
-        self.fields['latitude'].widget.attrs.update({'class': 'rui-combobox__control'})
-        self.fields['longitude'].widget.attrs.update({'class': 'rui-combobox__control'})
+        self.fields['business_activity'].widget.attrs.update(
+            {'class': 'rui-combobox__control'})
+        self.fields['jti_site'].widget.attrs.update(
+            {'class': 'rui-combobox__control'})
+        self.fields['latitude'].widget.attrs.update(
+            {'class': 'rui-combobox__control'})
+        self.fields['longitude'].widget.attrs.update(
+            {'class': 'rui-combobox__control'})
 
     def clean(self):
         super(HSIncidentForm, self).clean()
-            
+
         date_occurred = self.cleaned_data.get('date_occurred')
         date_reported = self.cleaned_data.get('date_reported')
         location = self.cleaned_data.get('location')
         jti_site = self.cleaned_data.get('jti_site')
         latitude = self.cleaned_data.get('latitude')
         longitude = self.cleaned_data.get('longitude')
-        incident_classification = self.cleaned_data.get('incident_classification')
+        incident_classification = self.cleaned_data.get(
+            'incident_classification')
         consequence = self.cleaned_data.get('consequence')
         age = self.cleaned_data.get('age')
         gender = self.cleaned_data.get('gender')
@@ -111,4 +118,13 @@ class HSIncidentForm(forms.ModelForm):
                     'Date occurred can not be in the future'])
 
         return self.cleaned_data
-    
+
+
+class MyInlineFormsetInjury(BaseInlineFormSet):
+
+    def clean(self):
+        super(MyInlineFormsetInjury, self).clean()
+        if any(self.errors):
+            return
+        if not any(form.cleaned_data for form in self):
+            raise forms.ValidationError('At least one injury should be added')

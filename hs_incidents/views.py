@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from hs_incidents.forms import HSIncidentForm
+from hs_incidents.forms import HSIncidentForm, MyInlineFormsetInjury
 from hs_incidents.models import HS_incident, Illness
 from django.forms import inlineformset_factory, Select, TextInput
 from hs_incidents.models import HS_incident, Injury
@@ -25,12 +25,14 @@ def hs_create_form(request):
     InjuryFormSet = inlineformset_factory(
         HS_incident,
         Injury,
+        formset=MyInlineFormsetInjury,
         fields='__all__',
         extra=3,
         widgets={
             'relation_to_business': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 200px;'}),
             'severity': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 200px;'}),
             'immediate_cause': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 200px;'}),
+            'vehicle': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 200px;'})
         },
     )
     IllnessFormSet = inlineformset_factory(
@@ -61,24 +63,31 @@ def hs_create_form(request):
             incident = form.save(commit=False)
             incident.date_created = timezone.now()
             incident.user = request.user
-            incident.save()
             if form.cleaned_data['incident_classification'] == 'Safety' and injury_formset.is_valid():
                 for injury_form in injury_formset:
-                    if injury_form.cleaned_data != {}:
+                    if injury_form.cleaned_data:
                         injury = injury_form.save(commit=False)
                         injury.incident = incident
                         injury.save()
+                incident.save()
+                unique_id, object_id = create_incident(incident)
+                incident.unique_id = unique_id
+                incident.object_id = object_id
+                incident.save()
+                return redirect(reverse('incidents'))
             elif form.cleaned_data['incident_classification'] == 'Health' and illness_formset.is_valid():
                 for illness_form in illness_formset:
-                    if illness_form.cleaned_data != {}:
+                    if illness_form.cleaned_data:
                         illness = illness_form.save(commit=False)
                         illness.incident = incident
                         illness.save()
-            simp_id = create_incident(incident)
-            incident.simp_id = simp_id
-            incident.save()
-            return redirect(reverse('incidents'))
-
+                incident.save()
+                unique_id, object_id = create_incident(incident)
+                incident.unique_id = unique_id
+                incident.object_id = object_id
+                incident.save()
+                return redirect(reverse('incidents'))
+            
     context = {
         'form': form,
         'injury_formset': injury_formset,
@@ -96,9 +105,9 @@ def hs_edit_form(request, *args, **kwargs):
         fields='__all__',
         extra=3,
         widgets={
-            'relation_to_business': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 200px;'}),
-            'severity': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 200px;'}),
-            'immediate_cause': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 200px;'}),
+            'relation_to_business': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 200px;', 'readonly': True,}),
+            'severity': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 200px;', 'readonly': True,}),
+            'immediate_cause': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 200px;', 'readonly': True,}),
         },
     )
     IllnessFormSet = inlineformset_factory(
@@ -107,41 +116,49 @@ def hs_edit_form(request, *args, **kwargs):
         fields='__all__',
         extra=3,
         widgets={
-            'relation_to_business': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;'}),
-            'severity': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;'}),
-            'immediate_cause': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;'}),
-            'consequence': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;'}),
-            'age': TextInput(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;'}),
-            'gender': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;'}),
+            'relation_to_business': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;', 'readonly': True,}),
+            'severity': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;', 'readonly': True,}),
+            'immediate_cause': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;', 'readonly': True,}),
+            'consequence': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;', 'readonly': True,}),
+            'age': TextInput(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;', 'readonly': True,}),
+            'gender': Select(attrs={'class': 'rui-combobox__control', 'style': 'width: 300px;', 'readonly': True,}),
         }
     )
 
     incident = HS_incident.objects.get(pk=kwargs['id'])
-    creation_date = incident.date_created
-    form = HSIncidentForm(instance=incident)
+    # creation_date = incident.date_created
+    # unique_id = incident.unique_id
+    # object_id = incident.object_id
+    form = HSIncidentForm(
+        instance=incident,
+        
+        )
     injury_formset = InjuryFormSet(instance=incident)
     illness_formset = IllnessFormSet(instance=incident)
 
-    if request.method == 'POST':
-        form = HSIncidentForm(request.POST, instance=incident)
-        injury_formset = InjuryFormSet(request.POST, instance=incident)
-        illness_formset = IllnessFormSet(request.POST, instance=incident)
+    # if request.method == 'POST':
+    #     form = HSIncidentForm(request.POST, instance=incident)
+    #     injury_formset = InjuryFormSet(request.POST, instance=incident)
+    #     illness_formset = IllnessFormSet(request.POST, instance=incident)
 
-        if form.is_valid():
-            incident = form.save(commit=False)
-            incident.date_created = creation_date
-            incident.user = request.user
-            incident.save()
-            if form.cleaned_data['incident_classification'] == 'Safety' and injury_formset.is_valid():
-                for injury_form in injury_formset:
-                    if injury_form.cleaned_data != {}:
-                        injury_form.save()
-            elif form.cleaned_data['incident_classification'] == 'Health' and illness_formset.is_valid():
-                for illness_form in illness_formset:
-                    if illness_form.cleaned_data != {}:
-                        illness_form.save()
-            # update_incident(incident)
-            return redirect(reverse('incidents'))
+        # if form.is_valid():
+        #     incident = form.save(commit=False)
+        #     incident.date_created = creation_date
+        #     incident.simp_id
+        #     incident.user = request.user
+        #     incident.unique_id = unique_id
+        #     incident.object_id = object_id
+        #     incident.save()
+        #     if form.cleaned_data['incident_classification'] == 'Safety' and injury_formset.is_valid():
+        #         for injury_form in injury_formset:
+        #             if injury_form.cleaned_data != {}:
+        #                 injury_form.save()
+        #     elif form.cleaned_data['incident_classification'] == 'Health' and illness_formset.is_valid():
+        #         for illness_form in illness_formset:
+        #             if illness_form.cleaned_data != {}:
+        #                 illness_form.save()
+        #     # update_incident(incident)
+        #     return redirect(reverse('incidents'))
 
     context = {
         'incident': incident,
